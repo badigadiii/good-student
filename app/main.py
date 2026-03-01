@@ -16,7 +16,7 @@ def build_demo_lecture_config() -> LectureConfig:
         student_name="Good Student",
         greetings_message="здарова",
         goodbye_message="чао",
-        lecture_start=None,
+        lecture_start=datetime.now(tz=TZ_SAMARA) + timedelta(seconds=15),
         lecture_end=datetime.now(tz=TZ_SAMARA) + timedelta(seconds=30),
         keyphrase_lecture_over=[
             "до свидания",

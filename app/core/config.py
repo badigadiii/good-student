@@ -7,6 +7,7 @@ class BotSettings(BaseSettings):
 
     headless: bool = True
     chat_poll_interval_ms: int = Field(default=3000, ge=0)
+    lecture_start_poll_interval_ms: int = chat_poll_interval_ms
     post_join_delay_ms: int = Field(default=1000, ge=0)
     pre_goodbye_delay_ms: int = Field(default=1000, ge=0)
     pre_leave_delay_ms: int = Field(default=1000, ge=0)

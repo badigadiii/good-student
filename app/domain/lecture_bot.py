@@ -8,9 +8,7 @@ from app.domain.models import ChatMessage, LectureConfig
 
 
 class LectureBot:
-    def __init__(
-        self, config: LectureConfig, client: LectureClient, settings: BotSettings
-    ):
+    def __init__(self, config: LectureConfig, client: LectureClient, settings: BotSettings):
         self._config = config
         self._client = client
         self._settings = settings
@@ -26,9 +24,7 @@ class LectureBot:
         matches = 0
         for message in recent_messages:
             normalized = self.normalize_text(message.text)
-            if any(
-                phrase in normalized for phrase in self._config.keyphrase_lecture_over
-            ):
+            if any(phrase in normalized for phrase in self._config.keyphrase_lecture_over):
                 matches += 1
         return matches >= self._settings.KEYPHRASE_MATCH_THRESHOLD
 
@@ -37,12 +33,16 @@ class LectureBot:
         return lecture_end is not None and now >= lecture_end
 
     def should_finish(self, messages: Sequence[ChatMessage], now: datetime) -> bool:
-        return self.is_lecture_over_by_keyphrases(
-            messages
-        ) or self.is_lecture_over_by_time(now)
+        return self.is_lecture_over_by_keyphrases(messages) or self.is_lecture_over_by_time(now)
 
     async def run(self, now_provider: Callable[..., datetime]) -> None:
         try:
+            if self._config.lecture_start:
+                while True:
+                    if self._current_time(now_provider) >= self._config.lecture_start:
+                        break
+                    await self._sleep(self._settings.lecture_start_poll_interval_ms)
+
             await self._client.join(self._config)
             await self._sleep(self._settings.post_join_delay_ms)
             await self._client.send_message(self._config.greetings_message)
