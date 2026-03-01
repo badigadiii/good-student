@@ -1,42 +1,39 @@
 import logging
-from datetime import datetime, timedelta, timezone
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 
-from pydantic import AnyUrl
+from fastapi import FastAPI, Request
 
+from app.api.routes import get_bot_manager
+from app.api.routes import router as bots_router
+from app.application.bot_manager import BotManager
 from app.core.config import BotSettings
-from app.core.factories import PlaywrightLectureClientFactory
-from app.domain.lecture_bot import LectureBot
-from app.domain.models import LectureConfig
 
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
 )
 
-TZ_SAMARA = timezone(timedelta(hours=4))
+
+def _get_bot_manager(request: Request) -> BotManager:
+    return request.app.state.bot_manager
 
 
-def build_demo_lecture_config() -> LectureConfig:
-    return LectureConfig(
-        lecture_url=AnyUrl("https://bbb.ssau.ru/b/202-2w5-kwd-ilr"),
-        student_name="Good Student",
-        greetings_message="здарова",
-        goodbye_message="чао",
-        lecture_start=None,  # datetime.now(tz=TZ_SAMARA) + timedelta(seconds=15)
-        lecture_end=None,  # datetime.now(tz=TZ_SAMARA) + timedelta(seconds=30)
-        keyphrase_lecture_over=[
-            "до свидания",
-            "досвидания",
-            "всего хорошего",
-            "спасибо за лекцию",
-        ],
-    )
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncIterator[None]:
+    app.state.settings = BotSettings()
+    app.state.bot_manager = BotManager(settings=app.state.settings)
+    try:
+        yield
+    finally:
+        await app.state.bot_manager.shutdown()
 
 
-async def main() -> None:
-    settings = BotSettings()
-    config = build_demo_lecture_config()
-    factory = PlaywrightLectureClientFactory(settings=settings)
-    client = await factory.create()
-    bot = LectureBot(config=config, client=client, settings=settings)
-    await bot.run(now_provider=datetime.now)
+def create_app() -> FastAPI:
+    app = FastAPI(lifespan=lifespan)
+    app.dependency_overrides[get_bot_manager] = _get_bot_manager
+    app.include_router(bots_router)
+    return app
+
+
+app = create_app()
