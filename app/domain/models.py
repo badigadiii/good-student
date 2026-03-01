@@ -42,9 +42,7 @@ class LectureConfig(BaseModel):
             if cleaned and cleaned not in normalized:
                 normalized.append(cleaned)
         if not normalized:
-            raise ValueError(
-                "keyphrase_lecture_over must contain at least one non-empty phrase"
-            )
+            raise ValueError("keyphrase_lecture_over must contain at least one non-empty phrase")
         return normalized
 
     @model_validator(mode="after")
