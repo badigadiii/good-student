@@ -66,13 +66,8 @@ class LectureBot:
             while True:
                 messages = await self._client.get_messages()
                 current_time = self._current_time(now_provider)
-                logger.debug(
-                    "Polled chat messages at %s: %s",
-                    current_time.isoformat(),
-                    messages,
-                )
                 if self.is_lecture_over_by_keyphrases(messages):
-                    logger.info("Lecture finish detected by keyphrases")
+                    logger.info("Lecture finish detected by keyphrases: %s", messages)
                     break
                 if self.is_lecture_over_by_time(current_time):
                     logger.info(
