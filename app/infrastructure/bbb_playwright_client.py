@@ -29,7 +29,9 @@ class BBBPlaywrightClient(LectureClient):
             await page.locator(selectors.JOIN_NAME_INPUT).fill(config.student_name)
             await page.locator(selectors.JOIN_BUTTON).click()
             listen_button = page.locator(selectors.LISTEN_ONLY_BUTTON)
-            await listen_button.wait_for(state="visible", timeout=config.wait_time_till_lecture_start_in_seconds)
+            await listen_button.wait_for(
+                state="visible", timeout=config.wait_time_till_lecture_start_in_seconds
+            )
             await listen_button.click()
         except Exception as error:
             raise LectureJoinError("failed to join lecture") from error

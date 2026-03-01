@@ -8,7 +8,9 @@ from app.domain.models import ChatMessage, LectureConfig
 
 
 class LectureBot:
-    def __init__(self, config: LectureConfig, client: LectureClient, settings: BotSettings):
+    def __init__(
+        self, config: LectureConfig, client: LectureClient, settings: BotSettings
+    ):
         self._config = config
         self._client = client
         self._settings = settings
@@ -20,11 +22,13 @@ class LectureBot:
         return " ".join(normalized.split())
 
     def is_lecture_over_by_keyphrases(self, messages: Sequence[ChatMessage]) -> bool:
-        recent_messages = messages[-self._settings.RECENT_MESSAGES_LIMIT:]
+        recent_messages = messages[-self._settings.RECENT_MESSAGES_LIMIT :]
         matches = 0
         for message in recent_messages:
             normalized = self.normalize_text(message.text)
-            if any(phrase in normalized for phrase in self._config.keyphrase_lecture_over):
+            if any(
+                phrase in normalized for phrase in self._config.keyphrase_lecture_over
+            ):
                 matches += 1
         return matches >= self._settings.KEYPHRASE_MATCH_THRESHOLD
 
@@ -33,7 +37,9 @@ class LectureBot:
         return lecture_end is not None and now >= lecture_end
 
     def should_finish(self, messages: Sequence[ChatMessage], now: datetime) -> bool:
-        return self.is_lecture_over_by_keyphrases(messages) or self.is_lecture_over_by_time(now)
+        return self.is_lecture_over_by_keyphrases(
+            messages
+        ) or self.is_lecture_over_by_time(now)
 
     async def run(self, now_provider: Callable[..., datetime]) -> None:
         try:

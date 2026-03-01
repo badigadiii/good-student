@@ -9,6 +9,7 @@ from app.domain.models import LectureConfig
 
 TZ_SAMARA = timezone(timedelta(hours=4))
 
+
 def build_demo_lecture_config() -> LectureConfig:
     return LectureConfig(
         lecture_url=AnyUrl("https://bbb.ssau.ru/b/202-2w5-kwd-ilr"),
@@ -17,7 +18,12 @@ def build_demo_lecture_config() -> LectureConfig:
         goodbye_message="чао",
         lecture_start=None,
         lecture_end=datetime.now(tz=TZ_SAMARA) + timedelta(seconds=30),
-        keyphrase_lecture_over=["до свидания", "досвидания", "всего хорошего", "спасибо за лекцию"],
+        keyphrase_lecture_over=[
+            "до свидания",
+            "досвидания",
+            "всего хорошего",
+            "спасибо за лекцию",
+        ],
     )
 
 
