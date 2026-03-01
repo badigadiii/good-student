@@ -10,4 +10,32 @@ dependencies = [
     "playwright>=1.58.0",
     "pytest-playwright>=0.7.2",
     "ruff>=0.15.4",
+    "pre-commit>=4.5.1",
 ]
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"
+exclude = [
+    "migrations",
+    "__pycache__",
+    ".venv",
+]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # bugbear
+    "UP",  # pyupgrade
+    "ASYNC", # async best practices
+]
+ignore = [
+    "E501",
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
