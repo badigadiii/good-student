@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 from pydantic import AnyUrl
 
@@ -7,6 +7,7 @@ from app.core.factories import PlaywrightLectureClientFactory
 from app.domain.lecture_bot import LectureBot
 from app.domain.models import LectureConfig
 
+TZ_SAMARA = timezone(timedelta(hours=4))
 
 def build_demo_lecture_config() -> LectureConfig:
     return LectureConfig(
@@ -15,8 +16,8 @@ def build_demo_lecture_config() -> LectureConfig:
         greetings_message="здарова",
         goodbye_message="чао",
         lecture_start=None,
-        lecture_end=None,
-        keyphrase_lecture_over=["до свидания", "досвидания", "всего хорошего"],
+        lecture_end=datetime.now(tz=TZ_SAMARA) + timedelta(seconds=30),
+        keyphrase_lecture_over=["до свидания", "досвидания", "всего хорошего", "спасибо за лекцию"],
     )
 
 
