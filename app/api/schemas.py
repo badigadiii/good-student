@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import AwareDatetime, BaseModel, ConfigDict, Field
 
 from app.domain.models import LectureConfig
 
@@ -12,6 +12,8 @@ class StartBotRequest(BaseModel):
     student_name: str = Field(min_length=1, max_length=100)
     greetings_message: str = Field(min_length=1, max_length=1000)
     goodbye_message: str = Field(min_length=1, max_length=1000)
+    lecture_start: AwareDatetime | None = None
+    lecture_end: AwareDatetime | None = None
     keyphrase_lecture_over: list[str] | None = None
 
     def to_lecture_config(self) -> LectureConfig:
