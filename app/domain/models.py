@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from pydantic import AnyUrl, BaseModel, ConfigDict, Field, field_validator, model_validator
 
@@ -17,6 +17,7 @@ class LectureConfig(BaseModel):
     lecture_start: datetime | None = None
     lecture_end: datetime | None = None
     keyphrase_lecture_over: list[str] = Field(min_length=1)
+    wait_time_till_lecture_start_in_seconds: int | None = Field(default=90 * 60 * 1000)
 
     @field_validator("lecture_start", "lecture_end")
     @classmethod
