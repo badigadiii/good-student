@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta, timezone
 
 from pydantic import AnyUrl
@@ -6,6 +7,11 @@ from app.core.config import BotSettings
 from app.core.factories import PlaywrightLectureClientFactory
 from app.domain.lecture_bot import LectureBot
 from app.domain.models import LectureConfig
+
+logging.basicConfig(
+    level=logging.DEBUG,
+    format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
+)
 
 TZ_SAMARA = timezone(timedelta(hours=4))
 
@@ -16,8 +22,8 @@ def build_demo_lecture_config() -> LectureConfig:
         student_name="Good Student",
         greetings_message="здарова",
         goodbye_message="чао",
-        lecture_start=datetime.now(tz=TZ_SAMARA) + timedelta(seconds=15),
-        lecture_end=datetime.now(tz=TZ_SAMARA) + timedelta(seconds=30),
+        lecture_start=None,  # datetime.now(tz=TZ_SAMARA) + timedelta(seconds=15)
+        lecture_end=None,  # datetime.now(tz=TZ_SAMARA) + timedelta(seconds=30)
         keyphrase_lecture_over=[
             "до свидания",
             "досвидания",
